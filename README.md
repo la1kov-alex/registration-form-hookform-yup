@@ -1,16 +1,55 @@
-# React + Vite
+# Форма регистрации React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Простое и элегантное приложение формы регистрации с валидацией, построенное на React с использованием функциональных компонентов и хуков.
 
-Currently, two official plugins are available:
+## 🚀 Функциональность
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Основные возможности
 
-## React Compiler
+-   ✅ Валидация email формата
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   ✅ Сложная валидация пароля с требованиями:
 
-## Expanding the ESLint configuration
+*   Минимум 8 символов
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*   Буквы в верхнем и нижнем регистре
+
+*   Хотя бы одна цифра
+
+*   Хотя бы один специальный символ
+
+-   ✅ Подтверждение пароля
+
+-   ✅ Валидация в реальном времени
+
+-   ✅ Визуальная обратная связь
+
+-   ✅ Автоматический фокус на кнопку при валидной форме
+
+-   ✅ Адаптивный дизайн
+
+## Валидация полей
+
+### Email
+
+-   Обязательное поле
+
+-   Проверка формата email
+
+## Пароль
+
+-   Обязательное поле
+
+-   Минимум 8 символов
+
+-   Должен содержать буквы в верхнем и нижнем регистре
+
+-   Должен содержать хотя бы одну цифру
+
+-   Должен содержать хотя бы один специальный символ
+
+## Подтверждение пароля
+
+-   Обязательное поле
+
+-   Должен совпадать с основным паролем
