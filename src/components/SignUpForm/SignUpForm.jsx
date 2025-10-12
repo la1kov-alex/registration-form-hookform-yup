@@ -2,10 +2,10 @@ import { EmailField } from './FormFields/EmailField';
 import { PasswordField } from './FormFields/PasswordField';
 import { ConfirmPasswordField } from './FormFields/ConfirmPasswordField';
 import { SuccessMessage } from './SuccessMessage';
-import { validateForm } from './validation';
+import { SubmitButton } from './FormFields/SubmitButton';
+import { validateForm } from './validation/validation';
 import { useState } from 'react';
 import styles from './SignUpForm.module.css';
-import { SubmitButton } from './FormFields/SubmitButton';
 
 export const SignUpForm = () => {
 	const [formData, setFromData] = useState({

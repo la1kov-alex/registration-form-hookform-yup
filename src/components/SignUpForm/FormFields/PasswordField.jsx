@@ -1,13 +1,8 @@
 import { PasswordRequirements } from './PasswordRequirements';
+import { getClassName } from '../constants/getClassName';
 import styles from '../SignUpForm.module.css';
 
 export const PasswordField = ({ value, error, touched, onChange, onBlur }) => {
-	const getClassName = () => {
-		if (error && touched) return `${styles.input} ${styles.error}`;
-		if (!error && touched && value) return `${styles.input} ${styles.success}`;
-		return styles.input;
-	};
-
 	return (
 		<div className={styles.input__group}>
 			<label htmlFor="password" className={styles.label}>
@@ -18,7 +13,7 @@ export const PasswordField = ({ value, error, touched, onChange, onBlur }) => {
 				name="password"
 				type="password"
 				placeholder="Пароль"
-				className={getClassName()}
+				className={getClassName({ error, touched, value })}
 				onChange={(e) => onChange(e.target.value)}
 				onBlur={(e) => onBlur(e.target.value)}
 				value={value}
