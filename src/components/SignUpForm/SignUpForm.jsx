@@ -1,118 +1,83 @@
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { EmailField } from './FormFields/EmailField';
 import { PasswordField } from './FormFields/PasswordField';
 import { ConfirmPasswordField } from './FormFields/ConfirmPasswordField';
 import { SuccessMessage } from './SuccessMessage';
 import { SubmitButton } from './FormFields/SubmitButton';
-import { validateForm } from './validation/validationForm';
+import { signUpSchema } from './validation/validationForm';
 import styles from './SignUpForm.module.css';
 
 export const SignUpForm = () => {
-	const [formData, setFormData] = useState({
-		email: '',
-		password: '',
-		confirmPassword: '',
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
+		watch,
+		trigger,
+	} = useForm({
+		resolver: yupResolver(signUpSchema),
+		mode: 'onChange',
+		reValidateMode: 'onChange',
 	});
 
-	const [errors, setErrors] = useState({});
-	const [touched, setTouched] = useState({});
-	const [submitted, setSubmitted] = useState(false);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const submitButtonRef = useRef(null);
+	const passwordValue = watch('password');
+	const emailValue = watch('email');
+	const confirmPasswordValue = watch('confirmPassword');
 
-	const handleChange = (name, value) => {
-		setFormData((prev) => {
-			const newFormData = { ...prev, [name]: value };
+	useEffect(() => {
+		if (isValid && submitButtonRef.current && !isSubmitSuccessful) {
+			const timer = setTimeout(() => {
+				submitButtonRef.current.focus();
+			}, 100);
 
-			if (touched[name]) {
-				const newErrors = validateForm(newFormData);
-				setErrors((prevErrors) => ({
-					...prevErrors,
-					[name]: newErrors[name] || '',
-				}));
-			}
-
-			return newFormData;
-		});
-	};
-
-	const handleBlur = (name, value) => {
-		setTouched((prev) => ({
-			...prev,
-			[name]: true,
-		}));
-
-		const currentFormData = { ...formData, [name]: value };
-		const newErrors = validateForm(currentFormData);
-		setErrors((prev) => ({
-			...prev,
-			[name]: newErrors[name] || '',
-		}));
-	};
-
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-
-		const allTouched = {
-			email: true,
-			password: true,
-			confirmPassword: true,
-		};
-		setTouched(allTouched);
-
-		const newErrors = validateForm(formData);
-		setErrors(newErrors);
-
-		const hasErrors = Object.values(newErrors).some((error) => error && error !== '');
-
-		if (!hasErrors) {
-			setIsSubmitting(true);
-			await new Promise((resolve) => setTimeout(resolve, 1000)); // Добавил имитацию отправки данных на сервер
-			console.log('Форма отправлена:', formData);
-			setSubmitted(true);
-			setIsSubmitting(false);
+			return () => clearTimeout(timer);
 		}
+	}, [isValid, isSubmitSuccessful]);
+
+	useEffect(() => {
+		if (confirmPasswordValue) {
+			trigger('confirmPassword');
+		}
+	}, [passwordValue, trigger, confirmPasswordValue]);
+
+	const onSubmit = async (data) => {
+		// Имитация отправки на сервер
+		console.log('Форма отправлена:', data);
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		return data;
 	};
 
-	const isFormValid = () => {
-		const noErrors = Object.values(errors).every((error) => !error || error === '');
-		const allFieldsFilled = Object.values(formData).every((value) => value !== '');
-
-		return noErrors && allFieldsFilled;
-	};
-
-	if (submitted) {
-		return <SuccessMessage email={formData.email} />;
+	if (isSubmitSuccessful) {
+		return <SuccessMessage email={emailValue} />;
 	}
 
 	return (
 		<div className={styles.form__container}>
 			<h2 className={styles.form__title}>Регистрация</h2>
-			<form className={styles.form} onSubmit={handleSubmit} noValidate>
-				<EmailField
-					value={formData.email}
-					error={errors.email}
-					touched={touched.email}
-					onChange={(value) => handleChange('email', value)}
-					onBlur={(value) => handleBlur('email', value)}
-				/>
+
+			<form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+				<EmailField register={register} error={errors.email} value={emailValue} />
+
 				<PasswordField
-					value={formData.password}
+					register={register}
 					error={errors.password}
-					touched={touched.password}
-					onChange={(value) => handleChange('password', value)}
-					onBlur={(value) => handleBlur('password', value)}
+					passwordValue={passwordValue}
 				/>
+
 				<ConfirmPasswordField
-					value={formData.confirmPassword}
-					password={formData.password}
+					register={register}
 					error={errors.confirmPassword}
-					touched={touched.confirmPassword}
-					onChange={(value) => handleChange('confirmPassword', value)}
-					onBlur={(value) => handleBlur('confirmPassword', value)}
+					passwordValue={passwordValue}
+					confirmPasswordValue={confirmPasswordValue}
 				/>
+
 				<SubmitButton
-					disabled={!isFormValid() || isSubmitting}
+					disabled={!isValid || isSubmitting}
 					isSubmitting={isSubmitting}
+					ref={submitButtonRef}
 				/>
 			</form>
 		</div>

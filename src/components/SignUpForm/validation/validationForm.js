@@ -1,14 +1,15 @@
 import * as yup from 'yup';
 
-const signUpSchema = yup.object({
+export const signUpSchema = yup.object({
 	email: yup
 		.string()
 		.email('Введите корректный email адрес')
 		.matches(
 			/^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-			'Email должен содержать домен (например @mail.ru)',
+			'Email должен содержать домен (например: @gmail.com)',
 		)
 		.required('Email обязателен для заполнения'),
+
 	password: yup
 		.string()
 		.min(8, 'Пароль должен содержать минимум 8 символов')
@@ -22,23 +23,9 @@ const signUpSchema = yup.object({
 			'Пароль должен содержать хотя бы один специальный символ',
 		)
 		.required('Пароль обязателен для заполнения'),
+
 	confirmPassword: yup
 		.string()
 		.oneOf([yup.ref('password')], 'Пароли не совпадают')
 		.required('Подтверждение пароля обязательно'),
 });
-
-export const validateForm = (formData) => {
-	try {
-		signUpSchema.validateSync(formData, { abortEarly: false });
-		return {};
-	} catch (validationErrors) {
-		const errors = {};
-		if (validationErrors.inner) {
-			validationErrors.inner.forEach((error) => {
-				errors[error.path] = error.message;
-			});
-		}
-		return errors;
-	}
-};

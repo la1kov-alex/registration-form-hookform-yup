@@ -1,7 +1,12 @@
-import { getClassName } from '../constants/getClassName';
 import styles from '../SignUpForm.module.css';
 
-export const EmailField = ({ value, error, touched, onChange, onBlur }) => {
+export const EmailField = ({ register, error, value }) => {
+	const getClassName = () => {
+		if (error) return `${styles.input} ${styles.error}`;
+		if (value && !error) return `${styles.input} ${styles.success}`;
+		return styles.input;
+	};
+
 	return (
 		<div className={styles.input__group}>
 			<label htmlFor="email" className={styles.label}>
@@ -9,15 +14,12 @@ export const EmailField = ({ value, error, touched, onChange, onBlur }) => {
 			</label>
 			<input
 				id="email"
-				name="email"
 				type="email"
-				placeholder="Почта"
-				className={getClassName({ error, touched, value })}
-				onChange={(e) => onChange(e.target.value)}
-				onBlur={(e) => onBlur(e.target.value)}
-				value={value}
+				placeholder="your@email.com"
+				className={getClassName()}
+				{...register('email')}
 			/>
-			{touched && error && <span className={styles.error}>{error}</span>}
+			{error && <span className={styles.error}>{error.message}</span>}
 		</div>
 	);
 };
